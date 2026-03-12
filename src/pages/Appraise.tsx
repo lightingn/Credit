@@ -45,6 +45,9 @@ export default function Appraise() {
   // Qualitative Override
   const [qualitativeNotes, setQualitativeNotes] = useState("");
 
+  // Uploaded Files State (for UI display only)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
   const addLog = (msg: string) => setProcessingLog(prev => [...prev, msg]);
 
   // Step 1: Handle Upload & Trigger Pipelines
@@ -198,9 +201,34 @@ export default function Appraise() {
                    <UploadCloud className="mx-auto h-8 w-8 text-muted-foreground mb-4" />
                    <p className="text-sm font-medium">Drag & Drop Documents (PDF)</p>
                    <p className="text-xs text-muted-foreground mt-1 mb-4">ITR, Bank Statements, Annual Report, Sanction Letters</p>
-                   <Input id="pdfUpload" type="file" multiple accept=".pdf" className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
+                   <Input 
+                     id="pdfUpload" 
+                     type="file" 
+                     multiple 
+                     accept=".pdf" 
+                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" 
+                     onChange={(e) => {
+                       if (e.target.files) {
+                         setSelectedFiles(Array.from(e.target.files));
+                       }
+                     }}
+                   />
                    <Button type="button" variant="outline" size="sm">Select Files</Button>
                 </div>
+
+                {selectedFiles.length > 0 && (
+                  <div className="bg-secondary/50 rounded-md p-4 space-y-2">
+                    <p className="text-xs font-semibold uppercase text-muted-foreground">Attached Files ({selectedFiles.length})</p>
+                    <ul className="text-sm space-y-1">
+                      {selectedFiles.map((file, idx) => (
+                        <li key={idx} className="flex items-center gap-2 text-foreground">
+                          <CheckCircle className="h-3 w-3 text-primary" />
+                          {file.name} <span className="text-xs text-muted-foreground">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="flex justify-end pt-4">
                   <Button type="submit" variant="hero">Start Pipeline <ArrowRight className="ml-2 h-4 w-4"/></Button>
