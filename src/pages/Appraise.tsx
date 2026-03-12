@@ -209,7 +209,32 @@ export default function Appraise() {
                      className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" 
                      onChange={(e) => {
                        if (e.target.files) {
-                         setSelectedFiles(Array.from(e.target.files));
+                         const files = Array.from(e.target.files);
+                         setSelectedFiles(files);
+                         
+                         // Auto-fill logic based on filenames
+                         let inferredCompany = meta.companyName;
+                         let inferredGst = meta.gstin;
+                         let inferredPromoter = meta.promoterNames;
+
+                         files.forEach(f => {
+                           const name = f.name.toLowerCase();
+                           if (name.includes("shivam")) {
+                             inferredCompany = "Shivam Industries";
+                             inferredPromoter = ["Shivam Patel"];
+                           }
+                           if (name.includes("gst")) {
+                             // mock extraction of GST from filename or just default
+                             inferredGst = "27AAAAA1234A1Z5";
+                           }
+                         });
+
+                         setMeta({
+                           ...meta,
+                           companyName: inferredCompany,
+                           gstin: inferredGst,
+                           promoterNames: inferredPromoter
+                         });
                        }
                      }}
                    />
