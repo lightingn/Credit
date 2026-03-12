@@ -78,7 +78,7 @@ export async function extractFinancialMetrics(pdfTexts: string[]): Promise<Finan
     // Fallback/Mock data if API key is invalid
     return {
       revenue: 97500000,
-      net_profit: 4500000,
+      net_profit: 6200000,
       total_debt: 36000000,
       ebitda: 13500000,
       current_assets: 13000000,
