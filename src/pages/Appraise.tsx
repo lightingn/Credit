@@ -198,7 +198,59 @@ export default function Appraise() {
                   </div>
                 </div>
 
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center bg-secondary/30 mt-6 relative hover:bg-secondary/50 transition">
+                <div 
+                  className="border-2 border-dashed border-border rounded-lg p-8 text-center bg-secondary/30 mt-6 relative hover:bg-secondary/50 transition"
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                      const fileList = e.dataTransfer.files;
+                      // Manually set the input files to trigger standardized logic if needed, 
+                      // or just call our shared logic directly
+                      const fileInput = document.getElementById("pdfUpload") as HTMLInputElement;
+                      if(fileInput) fileInput.files = fileList;
+                      
+                      const files = Array.from(fileList);
+                      setSelectedFiles(files);
+                      
+                      // Auto-fill logic based on filenames
+                      let inferredCompany = meta.companyName;
+                      let inferredGst = meta.gstin;
+                      let inferredPromoter = meta.promoterNames;
+
+                      files.forEach(f => {
+                        const name = f.name.toLowerCase();
+                        
+                        // Dynamic extraction for demo files like 'nova_bank_statement.pdf'
+                        if (name.includes("_")) {
+                          const prefix = name.split("_")[0];
+                          if (prefix && prefix.length > 2 && !['itr', 'bank', 'gst'].includes(prefix)) {
+                            // Capitalize first letter
+                            inferredCompany = prefix.charAt(0).toUpperCase() + prefix.slice(1) + " Enterprises";
+                            inferredPromoter = [prefix.charAt(0).toUpperCase() + prefix.slice(1) + " Director"];
+                          }
+                        }
+
+                        if (name.includes("shivam")) {
+                          inferredCompany = "Shivam Industries";
+                          inferredPromoter = ["Shivam Patel"];
+                        }
+                        
+                        if (name.includes("gst")) {
+                          inferredGst = "27AAAAA1234A1Z5";
+                        }
+                      });
+
+                      setMeta({
+                        ...meta,
+                        companyName: inferredCompany,
+                        gstin: inferredGst || "27AAAAA1234A1Z5", 
+                        promoterNames: inferredPromoter
+                      });
+                    }
+                  }}
+                >
                    <UploadCloud className="mx-auto h-8 w-8 text-muted-foreground mb-4" />
                    <p className="text-sm font-medium">Drag & Drop Documents (PDF)</p>
                    <p className="text-xs text-muted-foreground mt-1 mb-4">ITR, Bank Statements, Annual Report, Sanction Letters</p>
@@ -244,13 +296,13 @@ export default function Appraise() {
                          setMeta({
                            ...meta,
                            companyName: inferredCompany,
-                           gstin: inferredGst || "27AAAAA1234A1Z5", // fallback for demo if gst file uploaded
+                           gstin: inferredGst || "27AAAAA1234A1Z5",
                            promoterNames: inferredPromoter
                          });
                        }
                      }}
                    />
-                   <Button type="button" variant="outline" size="sm">Select Files</Button>
+                   <Button type="button" variant="outline" size="sm" className="pointer-events-none">Select Files</Button>
                 </div>
 
                 {selectedFiles.length > 0 && (
@@ -260,7 +312,7 @@ export default function Appraise() {
                       {selectedFiles.map((file, idx) => (
                         <li key={idx} className="flex items-center gap-2 text-foreground">
                           <CheckCircle className="h-3 w-3 text-primary" />
-                          {file.name} <span className="text-xs text-muted-foreground">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                          {file.name} <span className="text-xs text-muted-foreground">({(file.size / 1024).toFixed(2)} KB)</span>
                         </li>
                       ))}
                     </ul>
