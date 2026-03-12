@@ -1,0 +1,120 @@
+﻿[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+node.exe : Browserslist: 
+browsers data 
+(caniuse-lite) is 9 
+months old. Please run:
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  (Browserslist: b...l   
+ d. Please run::Strin    
+g) [], RemoteExcepti    
+on
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+  npx update-browserslist
+-db@latest
+  Why you should do it 
+regularly: https://github
+.com/browserslist/update-
+db#readme
+[32mΓ£ô[39m 2097 modules transformed.
+[31mx[39m Build failed 
+in 5.00s
+[31merror during build:
+[31msrc/pages/Report.tsx
+ (8:51): "formatINR" is 
+not exported by 
+"src/lib/scoring.ts", 
+imported by "src/pages/Re
+port.tsx".[31m
+file: [36mD:/SATYA/credi
+t-compass-main/src/pages/
+Report.tsx:8:51[31m
+[33m
+ 6: import { ScoreGauge 
+} from "@/components/Scor
+eGauge";
+ 7: import { 
+AnomalyBadge } from "@/co
+mponents/AnomalyBadge";
+ 8: import { 
+CreditResult, 
+CompanyData, 
+FinancialData, formatINR 
+} from "@/lib/scoring";
+                         
+                         
+     ^
+ 9: 
+10: const fiveCIcons = 
+[Shield, TrendingUp, 
+Landmark, Building2, 
+Globe];
+[31m
+    at getRollupError (fi
+le:///D:/SATYA/credit-com
+pass-main/node_modules/ro
+llup/dist/es/shared/parse
+Ast.js:395:41)
+    at error (file:///D:/
+SATYA/credit-compass-main
+/node_modules/rollup/dist
+/es/shared/parseAst.js:39
+1:42)
+    at Module.error (file
+:///D:/SATYA/credit-compa
+ss-main/node_modules/roll
+up/dist/es/shared/node-en
+try.js:15535:16)
+    at 
+Module.traceVariable (fil
+e:///D:/SATYA/credit-comp
+ass-main/node_modules/rol
+lup/dist/es/shared/node-e
+ntry.js:15984:29)
+    at 
+ModuleScope.findVariable 
+(file:///D:/SATYA/credit-
+compass-main/node_modules
+/rollup/dist/es/shared/no
+de-entry.js:13770:39)
+    at ReturnValueScope.f
+indVariable (file:///D:/S
+ATYA/credit-compass-main/
+node_modules/rollup/dist/
+es/shared/node-entry.js:5
+252:38)
+    at FunctionBodyScope.
+findVariable (file:///D:/
+SATYA/credit-compass-main
+/node_modules/rollup/dist
+/es/shared/node-entry.js:
+5252:38)
+    at Identifier.bind (f
+ile:///D:/SATYA/credit-co
+mpass-main/node_modules/r
+ollup/dist/es/shared/node
+-entry.js:5035:40)
+    at 
+CallExpression.bind (file
+:///D:/SATYA/credit-compa
+ss-main/node_modules/roll
+up/dist/es/shared/node-en
+try.js:2855:23)
+    at 
+CallExpression.bind (file
+:///D:/SATYA/credit-compa
+ss-main/node_modules/roll
+up/dist/es/shared/node-en
+try.js:11235:15)[39m

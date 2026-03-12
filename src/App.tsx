@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import Appraise from "./pages/Appraise";
-import Report from "./pages/Report";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,7 +20,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/appraise" element={<Appraise />} />
-          <Route path="/report" element={<Report />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
