@@ -220,12 +220,23 @@ export default function Appraise() {
 
                          files.forEach(f => {
                            const name = f.name.toLowerCase();
+                           
+                           // Dynamic extraction for demo files like 'nova_bank_statement.pdf'
+                           if (name.includes("_")) {
+                             const prefix = name.split("_")[0];
+                             if (prefix && prefix.length > 2 && !['itr', 'bank', 'gst'].includes(prefix)) {
+                               // Capitalize first letter
+                               inferredCompany = prefix.charAt(0).toUpperCase() + prefix.slice(1) + " Enterprises";
+                               inferredPromoter = [prefix.charAt(0).toUpperCase() + prefix.slice(1) + " Director"];
+                             }
+                           }
+
                            if (name.includes("shivam")) {
                              inferredCompany = "Shivam Industries";
                              inferredPromoter = ["Shivam Patel"];
                            }
+                           
                            if (name.includes("gst")) {
-                             // mock extraction of GST from filename or just default
                              inferredGst = "27AAAAA1234A1Z5";
                            }
                          });
@@ -233,7 +244,7 @@ export default function Appraise() {
                          setMeta({
                            ...meta,
                            companyName: inferredCompany,
-                           gstin: inferredGst,
+                           gstin: inferredGst || "27AAAAA1234A1Z5", // fallback for demo if gst file uploaded
                            promoterNames: inferredPromoter
                          });
                        }
