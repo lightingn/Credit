@@ -378,7 +378,7 @@ export default function Appraise() {
                   <div className="flex flex-col gap-1 mb-8">
                     <span className="text-xs font-mono font-bold text-[#81b29a] uppercase tracking-widest">Credit Appraisal Memorandum</span>
                     <h2 className="text-3xl font-extrabold text-foreground">{meta.companyName || "Untitled Company"}</h2>
-                    <span className="text-sm font-medium text-muted-foreground">• CIN: {meta.cin || "N/A"} • {fin.revenue > 100000000 ? "10+ years" : "5 years"}</span>
+                    <span className="text-sm font-medium text-muted-foreground">• CIN: {meta.cin || "N/A"} • {(fin?.revenue || 0) > 100000000 ? "10+ years" : "5 years"}</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-8 pt-6 border-t border-border">
@@ -446,12 +446,12 @@ export default function Appraise() {
                         <tr className="bg-background">
                           <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg> Capacity</td>
                           <td className="px-6 py-4 font-mono font-bold text-foreground">{score.capacity}/20</td>
-                          <td className="px-6 py-4 text-muted-foreground">DSCR: {fin.dscr.toFixed(2)}x, ICR: {fin.interest_coverage.toFixed(2)}x</td>
+                          <td className="px-6 py-4 text-muted-foreground">DSCR: {fin?.dscr?.toFixed(2) || "0.00"}x, ICR: {fin?.interest_coverage?.toFixed(2) || "0.00"}x</td>
                         </tr>
                         <tr className="bg-background">
                           <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><Building2 className="w-4 h-4 text-[#81b29a]"/> Capital</td>
                           <td className="px-6 py-4 font-mono font-bold text-foreground">{score.capital}/20</td>
-                          <td className="px-6 py-4 text-muted-foreground">D/E: {fin.debt_to_equity.toFixed(2)}x, Net Worth: ₹{(fin.net_worth/10000000).toFixed(2)}Cr</td>
+                          <td className="px-6 py-4 text-muted-foreground">D/E: {fin?.debt_to_equity?.toFixed(2) || "0.00"}x, Net Worth: ₹{((fin?.net_worth || 0)/10000000).toFixed(2)}Cr</td>
                         </tr>
                         <tr className="bg-background">
                           <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg> Collateral</td>
@@ -474,31 +474,31 @@ export default function Appraise() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">GSTR-1 Sales</span>
-                       <span className="font-bold text-foreground md:text-lg">₹{(fin.revenue/10000000).toFixed(2)} Cr</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{((fin?.revenue || 0)/10000000).toFixed(2)} Cr</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">Net Worth</span>
-                       <span className="font-bold text-foreground md:text-lg">₹{(fin.net_worth/10000000).toFixed(2)} Cr</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{((fin?.net_worth || 0)/10000000).toFixed(2)} Cr</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">Total Debt</span>
-                       <span className="font-bold text-foreground md:text-lg">₹{(fin.total_debt/10000000).toFixed(2)} Cr</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{((fin?.total_debt || 0)/10000000).toFixed(2)} Cr</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">D/E Ratio</span>
-                       <span className="font-bold text-foreground md:text-lg">{fin.debt_to_equity.toFixed(2)}x</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin?.debt_to_equity?.toFixed(2) || "0.00"}x</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">DSCR</span>
-                       <span className="font-bold text-foreground md:text-lg">{fin.dscr.toFixed(2)}x</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin?.dscr?.toFixed(2) || "0.00"}x</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">Interest Coverage</span>
-                       <span className="font-bold text-foreground md:text-lg">{fin.interest_coverage.toFixed(2)}x</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin?.interest_coverage?.toFixed(2) || "0.00"}x</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">Current Ratio</span>
-                       <span className="font-bold text-foreground md:text-lg">{fin.current_ratio.toFixed(2)}x</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin?.current_ratio?.toFixed(2) || "0.00"}x</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">EMI Bounces</span>
