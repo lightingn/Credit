@@ -20,6 +20,7 @@ import { generateRiskSignals } from "@/lib/riskSignals";
 import { computeFiveCs, FiveCsScore } from "@/lib/scoring";
 import { generateDecisionExplanation } from "@/lib/explainability";
 import { generateCAMReport } from "@/lib/camGenerator";
+import { ScoreGauge } from "@/components/ScoreGauge";
 
 const steps = [
   { label: "Upload Documents", icon: UploadCloud },
@@ -368,58 +369,174 @@ export default function Appraise() {
               </div>
             )}
 
-            {/* STEP 4: DECISION ENGINE & CAM */}
+            {/* STEP 4: DECISION ENGINE (Redesigned per mockups) */}
             {step === 3 && score && fin && (
-              <div className="space-y-8">
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold text-foreground">Decision Dashboard</h2>
-                  <p className="text-muted-foreground mt-1">Five Cs Automated Underwriting Output</p>
-                </div>
+              <div className="space-y-6">
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Total Score */}
-                  <div className="md:col-span-1 bg-card border border-border rounded-xl p-6 text-center shadow-sm flex flex-col justify-center">
-                     <div className="text-5xl font-black text-primary mb-2">{score.total}</div>
-                     <div className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Total Score</div>
-                     <div className={`mt-4 mx-auto px-4 py-1.5 rounded-full text-sm font-bold w-max ${
-                       score.total >= 80 ? 'bg-green-500/20 text-green-500' : 
-                       score.total >= 60 ? 'bg-yellow-500/20 text-yellow-500' : 'bg-red-500/20 text-red-500'
-                     }`}>
-                       {score.total >= 80 ? 'Low Risk' : score.total >= 60 ? 'Moderate Risk' : 'High Risk'}
-                     </div>
+                {/* Header Banner - Credit Appraisal Memorandum */}
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <div className="flex flex-col gap-1 mb-8">
+                    <span className="text-xs font-mono font-bold text-[#81b29a] uppercase tracking-widest">Credit Appraisal Memorandum</span>
+                    <h2 className="text-3xl font-extrabold text-foreground">{meta.companyName || "Untitled Company"}</h2>
+                    <span className="text-sm font-medium text-muted-foreground">• CIN: {meta.cin || "N/A"} • {fin.revenue > 100000000 ? "10+ years" : "5 years"}</span>
                   </div>
 
-                  {/* 5Cs Breakdown */}
-                  <div className="md:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[
-                      {label: "Character", val: score.character, max: 20},
-                      {label: "Capacity", val: score.capacity, max: 20},
-                      {label: "Capital", val: score.capital, max: 20},
-                      {label: "Collateral", val: score.collateral, max: 20},
-                      {label: "Conditions", val: score.conditions, max: 20},
-                    ].map(c => (
-                      <div key={c.label} className="bg-secondary rounded-lg p-4">
-                        <div className="text-xs text-muted-foreground font-medium uppercase">{c.label}</div>
-                        <div className="text-xl font-bold mt-1 text-foreground">{c.val} <span className="text-sm text-muted-foreground font-normal">/ {c.max}</span></div>
-                        <div className="w-full bg-border h-1.5 rounded-full mt-3 overflow-hidden">
-                          <div className="bg-primary h-full" style={{ width: `${(c.val / c.max) * 100}%` }} />
-                        </div>
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-3 gap-8 pt-6 border-t border-border">
+                    <div>
+                      <span className="block text-xs text-muted-foreground mb-1">Facility</span>
+                      <span className="font-semibold text-foreground">Term Loan</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs text-muted-foreground mb-1">Requested</span>
+                      <span className="font-semibold text-foreground">₹1.00 Cr</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs text-muted-foreground mb-1">Recommended</span>
+                      <span className="font-semibold text-[#81b29a]">₹1.00 Cr</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs text-muted-foreground mb-1">Interest Rate</span>
+                      <span className="font-bold text-foreground">7.89% p.a.</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Explainability Module */}
-                <div className="bg-card border border-border rounded-lg p-6">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2 text-primary">Explainability Engine</h3>
-                  <div className="text-sm whitespace-pre-wrap leading-relaxed">
-                    {generateDecisionExplanation(score, signals)}
+                {/* Final Decision Banner */}
+                <div className="bg-card border border-border rounded-xl p-8 flex flex-col items-center justify-center">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Final Decision</span>
+                  <div className={`text-3xl md:text-4xl font-extrabold uppercase mb-2 ${
+                    score.total >= 80 ? 'text-[#81b29a]' : 
+                    score.total >= 60 ? 'text-yellow-500' : 'text-red-500'
+                  }`}>
+                    {score.total >= 80 ? 'APPROVE WITH CONDITIONS' : score.total >= 60 ? 'MANUAL REVIEW REQUIRED' : 'DECLINE'}
+                  </div>
+                  <div className="font-mono text-sm font-semibold text-muted-foreground">Total Score: <span className="text-foreground">{score.total}/100</span></div>
+                </div>
+
+                {/* Scorecard Box */}
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-foreground mb-6">Five Cs Scorecard</h3>
+                  
+                  {/* Gauge Row */}
+                  <div className="flex flex-wrap items-end justify-between gap-6 px-4 pb-8">
+                     <ScoreGauge score={score.total} maxScore={100} label="Total" size="lg" />
+                     <ScoreGauge score={score.character} maxScore={20} label="Character" size="sm" />
+                     <ScoreGauge score={score.capacity} maxScore={20} label="Capacity" size="sm" />
+                     <ScoreGauge score={score.capital} maxScore={20} label="Capital" size="sm" />
+                     <ScoreGauge score={score.collateral} maxScore={20} label="Collateral" size="sm" />
+                     <ScoreGauge score={score.conditions} maxScore={20} label="Conditions" size="sm" />
+                  </div>
+
+                  {/* Justification Table */}
+                  <div className="border border-border rounded-lg overflow-hidden mt-4">
+                    <table className="w-full text-sm text-left">
+                      <thead className="bg-secondary/50 text-xs text-muted-foreground uppercase font-semibold">
+                        <tr>
+                          <th className="px-6 py-4">Parameter</th>
+                          <th className="px-6 py-4">Score</th>
+                          <th className="px-6 py-4">Justification</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        <tr className="bg-background">
+                          <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><div className="w-4 h-4 rounded text-primary border border-primary flex items-center justify-center p-0.5"><div className="w-full h-full border border-primary rounded-[1px]"/></div> Character</td>
+                          <td className="px-6 py-4 font-mono font-bold text-foreground">{score.character}/20</td>
+                          <td className="px-6 py-4 text-muted-foreground whitespace-pre-wrap">{research?.summary.split(".")[1] || "Promoter background assessed"}</td>
+                        </tr>
+                        <tr className="bg-background">
+                          <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg> Capacity</td>
+                          <td className="px-6 py-4 font-mono font-bold text-foreground">{score.capacity}/20</td>
+                          <td className="px-6 py-4 text-muted-foreground">DSCR: {fin.dscr.toFixed(2)}x, ICR: {fin.interest_coverage.toFixed(2)}x</td>
+                        </tr>
+                        <tr className="bg-background">
+                          <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><Building2 className="w-4 h-4 text-[#81b29a]"/> Capital</td>
+                          <td className="px-6 py-4 font-mono font-bold text-foreground">{score.capital}/20</td>
+                          <td className="px-6 py-4 text-muted-foreground">D/E: {fin.debt_to_equity.toFixed(2)}x, Net Worth: ₹{(fin.net_worth/10000000).toFixed(2)}Cr</td>
+                        </tr>
+                        <tr className="bg-background">
+                          <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg> Collateral</td>
+                          <td className="px-6 py-4 font-mono font-bold text-foreground">{score.collateral}/20</td>
+                          <td className="px-6 py-4 text-muted-foreground">Coverage: 1.50x</td>
+                        </tr>
+                        <tr className="bg-background">
+                          <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg> Conditions</td>
+                          <td className="px-6 py-4 font-mono font-bold text-foreground">{score.conditions}/20</td>
+                          <td className="px-6 py-4 text-muted-foreground">Sector: {research?.sectorTrend.toUpperCase() || "NEUTRAL"}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
-                <div className="flex justify-center pt-4">
-                  <Button variant="hero" size="lg" className="px-8" onClick={handleDownloadCAM}>
-                    <Download className="mr-2 h-5 w-5" /> Download CAM (.docx)
+                {/* Financial Snapshot */}
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-foreground mb-6">Financial Snapshot</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">GSTR-1 Sales</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{(fin.revenue/10000000).toFixed(2)} Cr</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">Net Worth</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{(fin.net_worth/10000000).toFixed(2)} Cr</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">Total Debt</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{(fin.total_debt/10000000).toFixed(2)} Cr</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">D/E Ratio</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin.debt_to_equity.toFixed(2)}x</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">DSCR</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin.dscr.toFixed(2)}x</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">Interest Coverage</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin.interest_coverage.toFixed(2)}x</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">Current Ratio</span>
+                       <span className="font-bold text-foreground md:text-lg">{fin.current_ratio.toFixed(2)}x</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded-lg p-4">
+                       <span className="block text-xs text-muted-foreground mb-1">EMI Bounces</span>
+                       <span className="font-bold text-foreground md:text-lg">1</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pricing Breakdown */}
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-foreground mb-6">Pricing Breakdown</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">RBI Repo Rate</span>
+                      <span className="font-mono font-bold text-foreground">6.50%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">Credit Risk Spread</span>
+                      <span className="font-mono font-bold text-foreground">0.64%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">Operational Cost</span>
+                      <span className="font-mono font-bold text-foreground">0.50%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">Profit Margin</span>
+                      <span className="font-mono font-bold text-foreground">0.25%</span>
+                    </div>
+                    <div className="pt-4 mt-2 border-t border-border flex justify-between items-center text-base">
+                      <span className="font-bold text-foreground">Total Interest Rate</span>
+                      <span className="font-mono font-bold text-[#81b29a]">7.89% p.a.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-center pt-8 border-t border-border">
+                  <Button variant="hero" size="lg" className="px-10" onClick={handleDownloadCAM}>
+                    <Download className="mr-2 h-5 w-5" /> Export Official CAM (.docx)
                   </Button>
                 </div>
               </div>
