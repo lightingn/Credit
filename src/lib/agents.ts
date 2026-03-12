@@ -5,8 +5,11 @@ import { FinancialDataExtracted, FinancialSchema } from "./schemas";
 // Setting up pdfjs worker using a reliable CDN that supports CORS structure
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+function getGeminiModel() {
+  const apiKey = localStorage.getItem("VITE_GEMINI_API_KEY") || import.meta.env.VITE_GEMINI_API_KEY || "";
+  const genAI = new GoogleGenerativeAI(apiKey);
+  return genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+}
 
 export async function extractTextFromPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -64,7 +67,7 @@ export async function extractFinancialMetrics(pdfTexts: string[]): Promise<Finan
   `;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await getGeminiModel().generateContent(prompt);
     let text = result.response.text();
     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
     // Validate schema

@@ -255,6 +255,33 @@ export default function Appraise() {
                   </div>
                 )}
 
+                <div className="border-t border-border mt-8 pt-6">
+                  <h3 className="text-sm font-semibold mb-3">Live Synthesis Credentials (Optional)</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-xs">Gemini AI Studio Key</Label>
+                      <Input 
+                        type="password" 
+                        placeholder="AIzaSy..." 
+                        onChange={e => localStorage.setItem("VITE_GEMINI_API_KEY", e.target.value)} 
+                        defaultValue={localStorage.getItem("VITE_GEMINI_API_KEY") || ""}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Tavily Search API Key</Label>
+                      <Input 
+                        type="password" 
+                        placeholder="tvly-..." 
+                        onChange={e => localStorage.setItem("VITE_TAVILY_API_KEY", e.target.value)} 
+                        defaultValue={localStorage.getItem("VITE_TAVILY_API_KEY") || ""}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-2">
+                    Keys are stored strictly in your browser's local storage. Leave blank to use simulated analytics.
+                  </p>
+                </div>
+
                 <div className="flex justify-end pt-4">
                   <Button type="submit" variant="hero">Start Pipeline <ArrowRight className="ml-2 h-4 w-4"/></Button>
                 </div>
