@@ -1,73 +1,59 @@
-# Welcome to your Lovable project
+# Intelli-Credit Engine
 
-## Project info
+Intelli-Credit is an automated MSME credit appraisal system built for the HDFC Hackathon. It leverages Generative AI and search-based Data Enrichment tools to automate the underwriting process based on the Five Cs of Credit (Character, Capacity, Capital, Collateral, and Conditions).
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🏗️ System Architecture 
 
-## How can I edit this code?
+1. **Document Upload & Parsing Agent** (Gemini + PDF.js): Extracts raw data from uploaded ITRs, Bank Statements, and Annual Reports into heavily structured JSON `FinancialDataExtracted` objects.
+2. **Web Research Agent** (Tavily + Gemini): Automatically queries the web to pull insights on promoter litigation, company defaults, and sector trends.
+3. **Financial Analysis Engine**: Computes ratios (DSCR, D/E, ICR) from the extracted PDF data automatically.
+4. **Risk Signal Engine**: Triggers rule-based flags such as "Sector trend downward" or "DSCR critically low."
+5. **Five Cs Scoring Model**: Aggregates all insights into a 100-point metric broken down across the 5Cs.
+6. **Explainability Engine**: Translates quantitative risk into human-readable narratives to prevent black-box decisioning.
+7. **CAM output Engine**: Assembles the findings into a downloaded Microsoft Word `(.docx)` file for the Credit Officer.
 
-There are several ways of editing your application.
+## 🚀 Getting Started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Ensure you have Node.js and `npm` installed.
 
-Changes made via Lovable will be committed automatically to this repo.
+### Environment Setup
 
-**Use your preferred IDE**
+Create a `.env` file in the root directory based on `.env.example`:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```env
+VITE_GEMINI_API_KEY="your_google_gemini_key_here"
+VITE_TAVILY_API_KEY="your_tavily_search_api_here"
+# Optional
+VITE_SERPAPI_KEY="your_serp_key_here"
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+```bash
+# Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+To build for production, run:
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+This application is purely frontend (React/Vite). You can host the contents of the `dist` folder on Vercel, Netlify, or GitHub Pages. Note that because API keys are exposed in the build (for demonstration purposes), you should restrict usage vectors on your GCP Console.
 
-## What technologies are used for this project?
+## 🛠️ Stack
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+*   [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+*   [Tailwind CSS](https://tailwindcss.com/)
+*   [shadcn/ui](https://ui.shadcn.com/)
+*   [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
+*   [docx](https://docx.js.org/)
+*   [Tavily Search API](https://tavily.com/)
