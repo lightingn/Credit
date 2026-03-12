@@ -24,17 +24,12 @@ export function calculateCurrentRatio(data: FinancialDataExtracted): number {
   return parseFloat((data.current_assets / data.current_liabilities).toFixed(2));
 }
 
-export function enrichFinancialMetrics(data: FinancialDataExtracted): FinancialDataExtracted & {
-  computed_dscr: number;
-  computed_debt_equity: number;
-  computed_interest_coverage: number;
-  computed_current_ratio: number;
-} {
+export function enrichFinancialMetrics(data: FinancialDataExtracted): any {
   return {
     ...data,
-    computed_dscr: calculateDSCR(data),
-    computed_debt_equity: calculateDebtEquity(data),
-    computed_interest_coverage: calculateInterestCoverage(data),
-    computed_current_ratio: calculateCurrentRatio(data),
+    dscr: calculateDSCR(data),
+    debt_to_equity: calculateDebtEquity(data),
+    interest_coverage: calculateInterestCoverage(data),
+    current_ratio: calculateCurrentRatio(data),
   };
 }

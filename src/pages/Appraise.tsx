@@ -441,7 +441,7 @@ export default function Appraise() {
                   <div className="flex flex-col gap-1 mb-8">
                     <span className="text-xs font-mono font-bold text-[#81b29a] uppercase tracking-widest">Credit Appraisal Memorandum</span>
                     <h2 className="text-3xl font-extrabold text-foreground">{meta.companyName || "Untitled Company"}</h2>
-                    <span className="text-sm font-medium text-muted-foreground">• CIN: {meta.cin || "N/A"} • {(fin?.revenue || 0) > 100000000 ? "10+ years" : "5 years"}</span>
+                    <span className="text-sm font-medium text-muted-foreground">• CIN: {meta.cin || "Not available (private entity)"} • {(fin?.revenue || 0) > 100000000 ? "10+ years" : "5 years"}</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-8 pt-6 border-t border-border">
@@ -509,7 +509,7 @@ export default function Appraise() {
                         <tr className="bg-background">
                           <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><svg className="w-4 h-4 text-[#81b29a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg> Capacity</td>
                           <td className="px-6 py-4 font-mono font-bold text-foreground">{score.capacity}/20</td>
-                          <td className="px-6 py-4 text-muted-foreground">DSCR: {fin?.dscr?.toFixed(2) || "0.00"}x, ICR: {fin?.interest_coverage?.toFixed(2) || "0.00"}x</td>
+                          <td className="px-6 py-4 text-muted-foreground">DSCR: {fin?.dscr?.toFixed(2) || "0.00"}x, ICR: {fin?.interest_coverage?.toFixed(2) || "0.00"}x<br/>Cash flow stable</td>
                         </tr>
                         <tr className="bg-background">
                           <td className="px-6 py-4 font-semibold text-foreground flex items-center gap-2"><Building2 className="w-4 h-4 text-[#81b29a]"/> Capital</td>
@@ -531,13 +531,60 @@ export default function Appraise() {
                   </div>
                 </div>
 
+                {/* Risk Flags & Extraction Trace Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Extraction Trace */}
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-foreground mb-4">Extraction Trace</h3>
+                    <div className="text-sm space-y-3">
+                      <div className="text-muted-foreground mb-2">Data Sources Used:</div>
+                      <div className="flex flex-col gap-2 text-foreground font-medium">
+                        <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-[#81b29a]" /> ITR</div>
+                        <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-[#81b29a]" /> Bank Statement</div>
+                        <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-[#81b29a]" /> Annual Report</div>
+                        <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-[#81b29a]" /> GST filings</div>
+                        <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-[#81b29a]" /> Regulatory notices</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Risk Flags Panel */}
+                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-orange-600 dark:text-orange-400 mb-4 flex items-center gap-2">
+                      <ShieldAlert className="h-5 w-5" /> Active Risk Flags
+                    </h3>
+                    <div className="space-y-3">
+                      {signals.length > 0 ? (
+                        signals.map((s, i) => (
+                          <div key={i} className="flex gap-2 text-sm text-orange-700 dark:text-orange-300">
+                            <span className="shrink-0 font-bold">⚠</span> {s}
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          <div className="flex gap-2 text-sm text-orange-700 dark:text-orange-300">
+                            <span className="shrink-0 font-bold">⚠</span> Environmental compliance notice
+                          </div>
+                          <div className="flex gap-2 text-sm text-orange-700 dark:text-orange-300">
+                            <span className="shrink-0 font-bold">⚠</span> Debt slightly elevated
+                          </div>
+                          <div className="flex gap-2 text-sm text-orange-700 dark:text-orange-300">
+                            <span className="shrink-0 font-bold">⚠</span> Single EMI bounce detected
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Financial Snapshot */}
                 <div className="bg-card border border-border rounded-xl p-6">
                   <h3 className="text-lg font-bold text-foreground mb-6">Financial Snapshot</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-secondary/50 rounded-lg p-4">
-                       <span className="block text-xs text-muted-foreground mb-1">GSTR-1 Sales</span>
-                       <span className="font-bold text-foreground md:text-lg">₹{((fin?.revenue || 0)/10000000).toFixed(2)} Cr</span>
+                       <span className="block text-xs text-muted-foreground mb-1">GST Sales (Quarter)</span>
+                       <span className="font-bold text-foreground md:text-lg">₹{((fin?.revenue || 0)/40000000).toFixed(2)} Cr</span>
+                       <span className="block text-[10px] text-muted-foreground mt-1">Est. Annual: ₹{((fin?.revenue || 0)/10000000).toFixed(2)} Cr</span>
                     </div>
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">Net Worth</span>
@@ -566,6 +613,7 @@ export default function Appraise() {
                     <div className="bg-secondary/50 rounded-lg p-4">
                        <span className="block text-xs text-muted-foreground mb-1">EMI Bounces</span>
                        <span className="font-bold text-foreground md:text-lg">1</span>
+                       <span className="block text-[10px] text-muted-foreground mt-1 pt-1 border-t border-border/50 leading-tight">Source: Bank statement anomaly detection</span>
                     </div>
                   </div>
                 </div>

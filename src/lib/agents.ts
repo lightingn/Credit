@@ -77,14 +77,15 @@ export async function extractFinancialMetrics(pdfTexts: string[]): Promise<Finan
     console.error("Gemini financial extraction failed", error);
     // Fallback/Mock data if API key is invalid
     return {
-      revenue: 55000000,
+      revenue: 97500000,
       net_profit: 4500000,
-      total_debt: 12000000,
-      ebitda: 6000000,
-      current_assets: 15000000,
+      total_debt: 36000000,
+      ebitda: 13500000,
+      current_assets: 13000000,
       current_liabilities: 10000000,
       net_worth: 25000000,
-      interest_expense: 1500000,
+      interest_expense: 3500000,
+      principal_payment: 6000000,
     };
   }
 }
