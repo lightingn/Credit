@@ -2,8 +2,8 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FinancialDataExtracted, FinancialSchema } from "./schemas";
 
-// Setting up pdfjs worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Setting up pdfjs worker using a reliable CDN that supports CORS structure
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
